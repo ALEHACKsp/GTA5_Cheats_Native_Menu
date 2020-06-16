@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.16)
+project(Menu)
+set(CMAKE_CXX_STANDARD 14)
+add_compile_options(-msse4.2)
+add_compile_options(-static-libstdc++)
+set(CMAKE_CXX_FLAGS -s)
+#include
+include_directories(MinHook/include)
+link_directories(${PROJECT_SOURCE_DIR}/MinHook/lib)
+add_library(Menu SHARED dllmain.cpp Hook.cpp Log.cpp Memory.cpp NativeInvoker.cpp InputHook.cpp keyboard.cpp CrossMapping.cpp MemTools.cpp Menu.cpp script.cpp script.h SubMenus.h HotKey.cpp HotKey.h)
+#lib
+target_link_libraries(Menu MinHook)
+target_link_libraries(Menu winmm)
