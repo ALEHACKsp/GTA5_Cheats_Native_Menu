@@ -45,10 +45,7 @@ CPatternResult	CPattern::get(int i)
 		return m_result[i];
 	return nullptr;
 }
-
-/*
-CPattern Private
-*/
+//匹配Pattern
 bool	CPattern::match(int i, uint64_t startAddress, bool virt)
 {
 	if (m_bSet)

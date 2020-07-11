@@ -23,9 +23,10 @@ uint64_t * nativeCall() {
 		static void* exceptionAddress;
 		//截获异常
 		__try{
-		    fn(&g_context);
-		    scrNativeCallContext::SetVectorResults(&g_context);
-        } catch (...) {
+                fn(&g_context);
+                scrNativeCallContext::SetVectorResults(&g_context);
+        }catch(...)
+        {
 		Log::Error("Fatal Error!,Could't invoke function");
 		}
 	}

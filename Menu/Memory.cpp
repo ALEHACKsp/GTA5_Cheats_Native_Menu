@@ -8,9 +8,7 @@ void Memory::executable_meta::EnsureInit() {
 	if ( m_begin ) {
 		return;
 	}
-
-	HMODULE gModule = GetModuleHandle( NULL );
-
+	HMODULE gModule = GetModuleHandle(NULL);
 	m_begin = reinterpret_cast<uintptr_t>(gModule);
 	const IMAGE_DOS_HEADER * dosHeader = reinterpret_cast<const IMAGE_DOS_HEADER*>(gModule);
 	const IMAGE_NT_HEADERS * ntHeader = reinterpret_cast<const IMAGE_NT_HEADERS64*>( reinterpret_cast<const uint8_t*>(dosHeader)+dosHeader->e_lfanew );

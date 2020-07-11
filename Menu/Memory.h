@@ -24,10 +24,9 @@ typedef basic_fnv_1<fnv_prime, fnv_offset_basis> fnv_1;
 namespace Memory {
 
 	void TransformPattern( const std::string & pattern, std::string & data, std::string & mask );
-
+//Meta
 	class executable_meta {
 	private:
-
 		uintptr_t	m_begin;
 		uintptr_t	m_end;
 		DWORD		m_size;
@@ -78,16 +77,11 @@ namespace Memory {
 
 	class pattern {
 	private:
-
 		std::string			m_bytes;
 		std::string			m_mask;
-
 		uint64_t			m_hash;
-
 		size_t				m_size;
-
 		matchVec			m_matches;
-
 		bool				m_matched;
 
 	private:
@@ -99,10 +93,8 @@ namespace Memory {
 		void EnsureMatches( int maxCount );
 
 	public:
-
 		template<size_t Len>
-		pattern( const char( &pattern )[Len] ) {
-
+		pattern(const char( &pattern )[Len] ) {
 			Initialize( pattern, Len );
 		}
 
@@ -116,7 +108,6 @@ namespace Memory {
 		}
 
 		inline size_t size() {
-
 			if ( !m_matched ) {
 				EnsureMatches( INT_MAX );
 			}
@@ -131,7 +122,6 @@ namespace Memory {
 			}
 
 			if ( m_matches.size() == 0 ) {
-
 				m_matches.push_back( pattern_match( nullptr ) );
 				return m_matches[0];
 			}
@@ -155,7 +145,6 @@ namespace Memory {
 #elif defined(_M_AMD64)
 		uintptr_t addressDiff = (address - 0x140000000);
 #endif
-
 		// pointer-style cast to ensure unsigned overflow ends up copied directly into a signed value
 		baseAddressDifference = *(ptrdiff_t*)&addressDiff;
 	}
@@ -214,7 +203,6 @@ namespace Memory {
 	inline void nop(AddressType address, size_t length)
 	{
 		adjust_base(address);
-
 		memset((void*)address, 0x90, length);
 	}
 
@@ -289,26 +277,4 @@ namespace Memory {
 	}
 
 	std::vector<DWORD64> get_string_addresses(std::string str);
-
-//	template <typename T>
-//	T get_value(std::vector<DWORD> offsets) {
-//
-//		uintptr_t Addr = get_multilayer_pointer(Hook::getWorldPtr(), offsets);
-//		if (Addr == NULL) {
-//			return NULL;
-//		}
-//
-//		return *((T*)Addr);
-//	}
-//
-//	template <typename T>
-//	void set_value(std::vector<DWORD> offsets, T value) {
-//		uintptr_t Addr = get_multilayer_pointer(Hook::getWorldPtr(), offsets);
-//		if (Addr == NULL) {
-//			return;
-//		}
-//
-//		*reinterpret_cast<T*>(Addr) = value;
-//	}
-
 }

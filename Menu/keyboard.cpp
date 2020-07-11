@@ -75,16 +75,6 @@ void reset_trainer_switch()
 	trainerResetTime = GetTickCount();
 }
 
-void get_button_state(bool *a, bool *b, bool *up, bool *down, bool *l, bool *r)
-{
-	if (a) *a = KeyDown(VK_NUMPAD5);
-	if (b) *b = KeyJustUp(VK_NUMPAD0);
-	if (up) *up = KeyDown(VK_NUMPAD8);
-	if (down) *down = KeyDown(VK_NUMPAD2);
-	if (r) *r = KeyDown(VK_NUMPAD6);
-	if (l) *l = KeyDown(VK_NUMPAD4);
-}
-
 void menu_beep(int snd)
 {
 	switch (snd)

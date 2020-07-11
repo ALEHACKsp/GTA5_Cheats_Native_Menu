@@ -1,5 +1,4 @@
 typedef bool(__cdecl* fpIsDLCPresent)();
-using fpGetLabelText = const char* (*) (void* this_, const char* label);
 class Hook{
 public:
     static void InitConsole();
@@ -14,11 +13,11 @@ public:
     static void Cleanup();
     static void FailPatterns(const char* name);
     static void WAIT(DWORD ms);
+    __int64 static * getGlobalPatern(int index);
     //变量
     static uint64_t* m_frameCount;
     static std::vector<LPVOID>		m_hooks;
     ////////////////////////////////////
-    static 	fpGetLabelText GetLabelText;
     static fpIsDLCPresent			is_DLC_present;
 
     typedef void(__cdecl* NativeHandler)(scrNativeCallContext* context);

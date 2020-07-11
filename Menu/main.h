@@ -7,11 +7,9 @@
 #include <set>
 #include <sstream>
 #include <unordered_map>
-#include <memory>
 #include <functional>
-#include <algorithm>
 #include <intrin.h>
-#include <time.h>
+#include <algorithm>
 //Header
 #include "Log.h"
 #include "Memory.h"

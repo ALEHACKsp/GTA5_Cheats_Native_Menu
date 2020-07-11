@@ -11,9 +11,6 @@ SubMenus Menu::Settings::currentMenu;
 int Menu::Settings::menuLevel = 0;
 int Menu::Settings::optionsArray[1000];
 SubMenus Menu::Settings::menusArray[1000];
-//字体颜色
-RGBAF Menu::Settings::titleText{ 255, 255, 255, 255, 7 };
-RGBAF Menu::Settings::titleText2{255,255,255,255,7};
 //标题矩阵
 RGBA Menu::Settings::titleRect{ 33,150,243,255 };
 //中的
@@ -30,17 +27,11 @@ RGBAF Menu::Settings::arrow2{ 0, 151, 243, 255, 3 };
 RGBAF Menu::Settings::breakText{ 255, 255, 255, 255, 1 };
 //尾部标题
 RGBA Menu::Settings::titleEnd{ 0, 0, 0, 150 };
-//标题结尾色
-RGBAF Menu::Settings::title_end{ 255,255,255,255,4 };
 //选项文字
 RGBAF Menu::Settings::optionText{ 255, 255, 255, 255, 6 };
 //选中条目的颜色
 RGBA Menu::Settings::optionRect{ 20, 20, 20, 150 };
-RGBA Menu::Settings::lanseRect{ 0, 0, 0, 255 };
-RGBA Menu::Settings::scroller{ 33,150,243, 255 };
-RGBA Menu::Settings::line{ 255,255,255,255 };
-//最下面的条
-RGBA Menu::Settings::lines{ 255,255,255,255 };
+RGBA SelectColor{ 33,150,243, 255 };
 
 
 //绘制文字
@@ -119,18 +110,6 @@ namespace Globe
 	}
 };
 
-void Menu::DRAW_TEXTURE(std::string Streamedtexture, std::string textureName, float x, float y, float width, float height, float rotation, int r, int g, int b, int a)
-{
-	if (!GRAPHICS::HAS_STREAMED_TEXTURE_DICT_LOADED((char*)Streamedtexture.c_str()))
-	{
-		GRAPHICS::REQUEST_STREAMED_TEXTURE_DICT((char*)Streamedtexture.c_str(), false);
-	}
-	else
-	{
-		GRAPHICS::DRAW_SPRITE((char*)Streamedtexture.c_str(), (char*)textureName.c_str(), x, y, width, height, rotation, r, g, b, a);
-	}
-}
-
 //标题
 void Menu::Title(const char * title)
 {
@@ -163,18 +142,18 @@ void Menu::Title(const char * title)
 bool Menu::Option(const char* option)
 {
 	Settings::optionCount++;
-	bool onThis = Settings::currentOption == Settings::optionCount ? true : false;
+	bool onThis = Settings::currentOption == Settings::optionCount;
 	if (Settings::currentOption <= 16 && Settings::optionCount <= 16)
 	{
 		Drawing::Text(option, onThis ? Settings::SelectedText : Settings::optionText, { Settings::menuX - 0.100f, (Settings::optionCount) * 0.035f + 0.128f }, { 0.32f, 0.32f }, false);
 		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
-		if(onThis)Drawing::Rect(Settings::scroller, { Settings::menuX, (Settings::optionCount) * 0.035f + 0.1415f, }, { 0.21f, 0.035f });else return NULL;
+		if(onThis)Drawing::Rect(SelectColor, { Settings::menuX, (Settings::optionCount) * 0.035f + 0.1415f, }, { 0.21f, 0.035f });else return NULL;
 	}
 	else if (Settings::optionCount > (Settings::currentOption - 16) && Settings::optionCount <= Settings::currentOption)
 	{
 		Drawing::Text(option, onThis ? Settings::SelectedText : Settings::optionText, { Settings::menuX - 0.100f, (Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.128f }, { 0.32f, 0.32f }, false);
 		Drawing::Rect(Settings::optionRect, { Settings::menuX,  (Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
-		if(onThis)Drawing::Rect(Settings::scroller, { Settings::menuX, (Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.1415f, }, { 0.21f, 0.035f }); else return NULL;
+		if(onThis)Drawing::Rect(SelectColor, { Settings::menuX, (Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.1415f, }, { 0.21f, 0.035f }); else return NULL;
 	}
 	if (Settings::currentOption == Settings::optionCount)
 	{
@@ -188,51 +167,87 @@ bool Menu::Option(const char* option)
 bool Menu::Break(const char * option)
 {
 	Settings::optionCount++;
-	bool onThis = Settings::currentOption == Settings::optionCount ? true : false;
+	bool onThis = Settings::currentOption == Settings::optionCount;
 	if (Settings::currentOption <= 16 && Settings::optionCount <= 16)
 	{
 		Drawing::Text(option, Settings::breakText, { Settings::menuX, (Settings::optionCount)*0.035f + 0.125f }, { 0.40f, 0.40f }, true);
 		Drawing::Rect(Settings::optionRect, { Settings::menuX, (Settings::optionCount)*0.035f + 0.1415f }, { 0.21f, 0.035f });
-		if(onThis) Drawing::Rect(Settings::scroller, { Settings::menuX, (Settings::optionCount) * 0.035f + 0.1415f, }, { 0.21f, 0.035f });else return NULL;
+		if(onThis) Drawing::Rect(SelectColor, { Settings::menuX, (Settings::optionCount) * 0.035f + 0.1415f, }, { 0.21f, 0.035f });else return NULL;
 	}
 	else if (Settings::optionCount > (Settings::currentOption - 16) && Settings::optionCount <= Settings::currentOption)
 	{
 		Drawing::Text(option, Settings::breakText, { Settings::menuX, (Settings::optionCount - (Settings::currentOption - 16))*0.035f + 0.125f }, { 0.40f, 0.40f }, true);
 		Drawing::Rect(Settings::optionRect, { Settings::menuX,  (Settings::optionCount - (Settings::currentOption - 16))*0.035f + 0.1415f }, { 0.21f, 0.035f });
-		if(onThis)Drawing::Rect(Settings::scroller, { Settings::menuX, (Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.1415f, }, { 0.21f, 0.035f }); else return NULL;
+		if(onThis)Drawing::Rect(SelectColor, { Settings::menuX, (Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.1415f, }, { 0.21f, 0.035f }); else return NULL;
 	}
 	return false;
 }
-
-bool Menu::Option(const char* option, std::function<void()> function, const char* car, const char* cars)
-{
-	Option(option);
-	if (Menu::Settings::optionCount == Menu::Settings::currentOption)
-	{
-		Menu::Drawing::Spriter(car, cars, Menu::Settings::menuX + 0.21f, 0.2f, 0.15f, 0.15f, 0, 255, 255, 255, 255);
-	}
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	return false;
+//选项+布尔值
+bool Menu::IntBool(const char *option, bool &switch_bool, int &curr, int min, int max, std::function<void ()> function) {
+    IntBool(option,switch_bool,curr,min,max);
+    //回车事件
+    if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
+        function();
+        return true;
+    }
+    //左键事件
+    else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
+        function();
+        return true;
+    }
+    //右键事件
+    else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
+        function();
+        return true;
+    }
+    return false;
 }
-bool Menu::Option(const char* option, std::function<void()> function)
-{
-	Option(option);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	return false;
+bool Menu::IntBool(const char* option,bool& switch_bool,int& curr,int min,int max) {
+    Option(option);
+    bool onThis = Settings::currentOption == Settings::optionCount;
+    if (Settings::optionCount == Settings::currentOption) {
+        if (Settings::leftPressed) {
+            //左键处理
+            //如果当前值小于min 就调整到最大 否则继续-1
+            curr <= min ? curr = max : curr -= 1;
+        }
+        if (Settings::rightPressed) {
+            //右键处理
+            //如果当前值大于max 就调整到最小 否则继续+1
+            curr >= max ? curr = min : curr += 1;
+        }
+    }
+    if (Settings::currentOption <= Settings::maxVisOptions && Settings::optionCount <= Settings::maxVisOptions)
+        Drawing::Text(Tools::StringToChar("< " + std::to_string(curr) + " >"), onThis ? Settings::integre2 : Settings::integre, { Settings::menuX + 0.068f, Settings::optionCount * 0.035f + 0.128f }, { 0.32f, 0.32f }, true);
+    else if (Settings::optionCount > Settings::currentOption - Settings::maxVisOptions && Settings::optionCount <= Settings::currentOption)
+        Drawing::Text(Tools::StringToChar("< " + std::to_string(curr) + " >"), onThis ? Settings::integre2 : Settings::integre, { Settings::menuX + 0.068f, (Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.12f }, { 0.32f, 0.32f }, true);
+    if (switch_bool)
+    {
+        if (Settings::currentOption <= Settings::maxVisOptions && Settings::optionCount <= Settings::maxVisOptions)
+            Drawing::Spriter("commonmenu", "shop_box_tick", Settings::menuX + 0.095f, (Settings::optionCount * 0.035f + 0.141f), 0.03f, 0.05f, 0, 255, 255, 255, 255);
+        else if (Settings::optionCount > Settings::currentOption - Settings::maxVisOptions && Settings::optionCount <= Settings::currentOption)
+            Drawing::Spriter("commonmenu", "shop_box_tick", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.03f, 0.05f, 0, 255, 255, 255, 255);
+    }
+    else
+    {
+        if (Settings::currentOption <= Settings::maxVisOptions && Settings::optionCount <= Settings::maxVisOptions)
+            Drawing::Spriter("commonmenu", "shop_box_blank", Settings::menuX + 0.095f, (Settings::optionCount * 0.035f + 0.141f), 0.03f, 0.05f, 0, 255, 255, 255, 255);
+        else if (Settings::optionCount > Settings::currentOption - Settings::maxVisOptions && Settings::optionCount <= Settings::currentOption)
+            Drawing::Spriter("commonmenu", "shop_box_blank", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.03f, 0.05f, 0, 255, 255, 255, 255);
+    }
+    //回车事件
+    if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
+        //异或取反
+        switch_bool ^= true;
+        return true;
+    }
+    return false;
 }
-
 bool Menu::MenuOption(const char* option, SubMenus newSub)
 {
 	Option(option);
 
-	bool onThis = Settings::currentOption == Settings::optionCount ? true : false;
+	bool onThis = Settings::currentOption == Settings::optionCount;
 	if (Settings::currentOption <= Settings::maxVisOptions && Settings::optionCount <= Settings::maxVisOptions)
 	{
 		Drawing::Text("2", onThis ? Settings::arrow2 : Settings::arrow, { Settings::menuX + 0.099f, Settings::optionCount * 0.035f + 0.128f }, { 0.25f, 0.25f }, true);
@@ -247,27 +262,7 @@ bool Menu::MenuOption(const char* option, SubMenus newSub)
 	}
 	return false;
 }
-bool Menu::MenuOption(const char * option, SubMenus newSub, std::function<void()> function)
-{
-	MenuOption(option, newSub);
 
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
-//这个是专门用来处理玩家列表用的
-//void Menu::PlayerListMenu(const char * option, SubMenus newSub)
-//{
-//	MenuOption(option, newSub);
-//
-//	if (Settings::selectPressed) {
-//		if (Settings::optionCount == 1) {
-//		Features::Online::selectedPlayer = Settings::currentOption-1;
-//		}
-//	}
-//}
 bool Menu::Bool(const char* option, bool& switch_bool)
 {
 	Option(option);
@@ -286,28 +281,16 @@ bool Menu::Bool(const char* option, bool& switch_bool)
 			Drawing::Spriter("commonmenu", "shop_box_blank", Settings::menuX + 0.095f, ((Settings::optionCount - (Settings::currentOption - 16)) * 0.035f + 0.141f), 0.03f, 0.05f, 0, 255, 255, 255, 255);
 	}
 	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		switch_bool ^= 1;
+		switch_bool ^= true;
 		return true;
 	}
 	return false;
 }
-
-bool Menu::Bool(const char* option, bool& b00l, std::function<void()> function)
-{
-	Bool(option, b00l);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
-
 
 bool Menu::Int(const char* option, int& _int, int min, int max)
 {
 	Option(option);
-	bool onThis = Settings::currentOption == Settings::optionCount ? true : false;
+	bool onThis = Settings::currentOption == Settings::optionCount;
 	if (Settings::optionCount == Settings::currentOption) {
 		if (Settings::leftPressed) {
 			//左键处理
@@ -359,42 +342,6 @@ bool Menu::Int(const char * option, int & _int, int min, int max, int step)
 	return false;
 }
 
-bool Menu::Int(const char* option, int& _int, int min, int max, std::function<void()> function)
-{
-	Int(option, _int, min, max);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
-bool Menu::Int(const char * option, int & _int, int min, int max, int step, std::function<void()> function)
-{
-	Int(option, _int, min, max, step);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
 bool Menu::Float(const char * option, float & _float, int min, int max)
 {
 	Option(option);
@@ -444,43 +391,6 @@ bool Menu::Float(const char * option, float & _float, int min, int max, int step
 	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) return true;
 	return false;
 }
-bool Menu::Float(const char * option, float & _float, int min, int max, std::function<void()> function)
-{
-	Float(option, _float, min, max);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
-
-bool Menu::Float(const char * option, float & _float, int min, int max, int step, std::function<void()> function)
-{
-	Float(option, _float, min, max, step);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
 
 bool Menu::IntVector(const char * option, std::vector<int> Vector, int & position)
 {
@@ -505,25 +415,6 @@ bool Menu::IntVector(const char * option, std::vector<int> Vector, int & positio
 	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) return true;
 	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) return true;
 	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) return true;
-	return false;
-}
-
-bool Menu::IntVector(const char * option, std::vector<int> Vector, int & position, std::function<void()> function)
-{
-	IntVector(option, Vector, position);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
 	return false;
 }
 
@@ -553,25 +444,6 @@ bool Menu::FloatVector(const char * option, std::vector<float> Vector, int & pos
 	return false;
 }
 
-bool Menu::FloatVector(const char * option, std::vector<float> Vector, int & position, std::function<void()> function)
-{
-	FloatVector(option, Vector, position);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
-
 bool Menu::StringVector(const char * option, std::vector<std::string> Vector, int & position)
 {
 	Option(option);
@@ -595,25 +467,6 @@ bool Menu::StringVector(const char * option, std::vector<std::string> Vector, in
 	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) return true;
 	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) return true;
 	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) return true;
-	return false;
-}
-
-bool Menu::StringVector(const char * option, std::vector<std::string> Vector, int & position, std::function<void()> function)
-{
-	StringVector(option, Vector, position);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
 	return false;
 }
 
@@ -642,26 +495,7 @@ bool Menu::StringVector(const char * option, std::vector<char*> Vector, int & po
 	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) return true;
 	return false;
 }
-#pragma warning(default: 4267)
 
-bool Menu::StringVector(const char * option, std::vector<char*> Vector, int & position, std::function<void()> function)
-{
-	StringVector(option, Vector, position);
-
-	if (Settings::optionCount == Settings::currentOption && Settings::selectPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::leftPressed) {
-		function();
-		return true;
-	}
-	else if (Settings::optionCount == Settings::currentOption && Settings::rightPressed) {
-		function();
-		return true;
-	}
-	return false;
-}
 void Menu::info(const char * info)
 {
 	if (Settings::currentOption <= 16 && Settings::optionCount <= 16)
@@ -684,16 +518,13 @@ void Menu::End()
 {
 	int opcount = Settings::optionCount;
 	int currop = Settings::currentOption;
-	float rate = 16.00 / (float)opcount;
 	if (opcount >= 16) {
-		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, 17 * 0.035f /*- 0.467f*/ + 0.125f }, { 0.35f, 0.35f }, true);
-		Drawing::Rect(Settings::lanseRect, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
-		Drawing::Rect(Settings::lines, { Settings::menuX, 17 * 0.035f + 0.1235f }, { 0.21f, 0.002f });
+		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX, 17 * 0.035f /*- 0.467f*/ + 0.125f }, { 0.35f, 0.35f }, true);
+		Drawing::Rect({0,0,0,130}, { Settings::menuX, 17 * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 	}
 	else if (opcount > 0) {
-		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX + 0.080f, (Settings::optionCount + 1) * 0.035f /*- 0.467f*/ + 0.125f }, { 0.35f, 0.35f }, true);
-		Drawing::Rect(Settings::lanseRect, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
-		Drawing::Rect(Settings::lines, { Settings::menuX, (opcount + 1) * 0.035f + 0.1235f }, { 0.21f, 0.002f });
+		Drawing::Text(Tools::StringToChar(std::to_string(currop) + " / " + std::to_string(opcount)), Settings::count, { Settings::menuX, (Settings::optionCount + 1) * 0.035f /*- 0.467f*/ + 0.125f }, { 0.35f, 0.35f }, true);
+		Drawing::Rect({0,0,0,130}, { Settings::menuX, (Settings::optionCount + 1) * 0.035f + 0.1415f }, { 0.21f, 0.035f });
 		}
 }
 
